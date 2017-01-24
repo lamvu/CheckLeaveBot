@@ -30,7 +30,7 @@ dialog.matches(/^echo/i, [
         session.send("Ok... %s", results.response);
     }
 ]);
-intents.matches(/^version/i, function (session) {
+dialog.matches(/^version/i, function (session) {
     session.send('Bot version 1.2');
 });
 /*
