@@ -22,6 +22,18 @@ var dialog = new builder.IntentDialog({ recognizers: [recognizer] });
 bot.dialog('/', dialog);
 
 // Add intent handlers
+dialog.matches(/^echo/i, [
+    function (session) {
+        builder.Prompts.text(session, "What would you like me to say?");
+    },
+    function (session, results) {
+        session.send("Ok... %s", results.response);
+    }
+]);
+intents.matches(/^version/i, function (session) {
+    session.send('Bot version 1.2');
+});
+/*
 dialog.matches('builtin.intent.alarm.set_alarm', [
     function (session, args, next) {
         // Resolve and store any entities passed from LUIS.
@@ -107,6 +119,9 @@ dialog.matches('builtin.intent.alarm.delete_alarm', [
 ]);
 
 dialog.onDefault(builder.DialogAction.send("I'm sorry I didn't understand. I can only create & delete alarms."));
+*/
+
+
 
 /*
 // Create bot dialogs
