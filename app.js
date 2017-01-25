@@ -7,11 +7,6 @@ var req = xmlhttp.XMLHttpRequest;
 var res = "Lam here";
 var token = "vsdtechno:welcome1";
 var hash = btoa(token);
-
-/*
-var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
-var token = "vsdtechno:welcome1";
-var hash = btoa(token);
 var request_ = new XMLHttpRequest();
 request_.open("GET", "http://acclimecc6.dev.acclim.local:8000/sap/opu/odata/GBHCM/LEAVEREQUEST;v=2/AbsenceTypeCollection(EmployeeID='',StartDate=datetime'2016-12-13T00%3A00%3A00',AbsenceTypeCode='0100')/absenceTypeTimeAccount?$select=BalancePlannedQuantity,BalanceAvailableQuantity,BalanceUsedQuantity,TimeUnitName,TimeAccountTypeName", true);
 request.setRequestHeader("Authorization", "Basic " + hash);
@@ -25,7 +20,7 @@ request_.onreadystatechange = function () {
         console.log(obj);
         session.send('Bot version 1.2');
     }
-}*/
+}
 
 // Setup Restify Server
 var server = restify.createServer();
@@ -61,8 +56,8 @@ dialog.matches(/^version/i, function (session) {
 });
 
 dialog.matches(/^leave/i, function (session) {
-    session.send(token);
     session.send(hash);
+    session.send(res);
 });
 
 dialog.onDefault(builder.DialogAction.send("I didn't understand. I can check leave for you."));
