@@ -22,17 +22,38 @@ var dialog = new builder.IntentDialog({ recognizers: [recognizer] });
 bot.dialog('/', dialog);
 
 // Add intent handlers
-dialog.matches(/^echo/i, [
+dialog.matchesAny([/hi/i, /hello/i, /good/i], [
     function (session) {
-        builder.Prompts.text(session, "What would you like me to say?");
+        builder.Prompts.text(session, "Hello. What is your name ?");
     },
     function (session, results) {
-        session.send("Ok... %s", results.response);
+        session.send("Nice to me you, %s", results.response);
     }
 ]);
+
 dialog.matches(/^version/i, function (session) {
     session.send('Bot version 1.2');
 });
+
+dialog.matches(/^leave/i, function (session) {
+    var token = user + ":" + password;
+    var hash = btoa(token);
+    var request_ = new XMLHttpRequest();
+    request_.open("GET", "https://xxx123.caspio.com/rest/v1/tables/", true);
+    request.setRequestHeader("Authorization", "Basic " + hash);
+    request_.send();
+    request_.onreadystatechange = function () {
+        if (request_.readyState == 4 && request_.readyState == 200) {
+            var response = request_.responseText;
+            console.log(response);
+            var obj = JSON.parse(response); 
+            console.log(obj);
+            session.send('Bot version 1.2');
+        }
+    }
+});
+
+dialog.onDefault(builder.DialogAction.send("I didn't understand. I can check leave for you."));
 /*
 dialog.matches('builtin.intent.alarm.set_alarm', [
     function (session, args, next) {
