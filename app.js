@@ -3,13 +3,13 @@ var restify = require('restify');
 var builder = require('botbuilder');
 var xmlhttp = require("xmlhttprequest");
 var btoa = require('btoa');
-var req = xmlhttp.XMLHttpRequest;
+//var req = xmlhttp.XMLHttpRequest;
 var res = "Lam here";
 var token = "vsdtechno:welcome1";
 var hash = btoa(token);
-var request_ = new req();
-request_.open("GET", "http://acclimecc6.dev.acclim.local:8000/sap/opu/odata/GBHCM/LEAVEREQUEST;v=2/AbsenceTypeCollection(EmployeeID='',StartDate=datetime'2016-12-13T00%3A00%3A00',AbsenceTypeCode='0100')/absenceTypeTimeAccount?$select=BalancePlannedQuantity,BalanceAvailableQuantity,BalanceUsedQuantity,TimeUnitName,TimeAccountTypeName", true);
-request.setRequestHeader("Authorization", "Basic " + hash);
+//var request_ = new req();
+//request_.open("GET", "http://acclimecc6.dev.acclim.local:8000/sap/opu/odata/GBHCM/LEAVEREQUEST;v=2/AbsenceTypeCollection(EmployeeID='',StartDate=datetime'2016-12-13T00%3A00%3A00',AbsenceTypeCode='0100')/absenceTypeTimeAccount?$select=BalancePlannedQuantity,BalanceAvailableQuantity,BalanceUsedQuantity,TimeUnitName,TimeAccountTypeName", true);
+//request.setRequestHeader("Authorization", "Basic " + hash);
 
 // Setup Restify Server
 var server = restify.createServer();
