@@ -23,6 +23,7 @@
   "homepage": "https://github.com/lamvu/CheckLeaveBot#readme",
   "dependencies": {
     "botbuilder": "^3.5.3",
+    "btoa": "^1.1.2",
     "restify": "^4.3.0",
     "xmlhttprequest": "^1.8.0"
   }
