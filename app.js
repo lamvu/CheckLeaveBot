@@ -45,6 +45,7 @@ dialog.matches(/^version/i, function (session) {
 });
 
 dialog.matches(/^leave/i, function (session) {
+    /*
     request_.send();
     request_.onreadystatechange = function (xhr) {
         if (xhr.readyState == 4) {
@@ -60,7 +61,7 @@ dialog.matches(/^leave/i, function (session) {
             session.send(xhr.readyState);
             session.send(xhr.statusText);
         }
-    }
+    }*/
 });
 
 dialog.onDefault(builder.DialogAction.send("I didn't understand. I can check leave for you."));
