@@ -45,6 +45,7 @@ dialog.matches(/^version/i, function (session) {
 });
 
 dialog.matches(/^leave/i, function (session) {
+    session.send("HI");
     /*
     request_.send();
     request_.onreadystatechange = function (xhr) {
