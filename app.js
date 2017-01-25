@@ -41,6 +41,7 @@ dialog.matches(/^leave/i, function (session) {
     var request_ = new XMLHttpRequest();
     request_.open("GET", "http://acclimecc6.dev.acclim.local:8000/sap/opu/odata/GBHCM/LEAVEREQUEST;v=2/AbsenceTypeCollection(EmployeeID='',StartDate=datetime'2016-12-13T00%3A00%3A00',AbsenceTypeCode='0100')/absenceTypeTimeAccount?$select=BalancePlannedQuantity,BalanceAvailableQuantity,BalanceUsedQuantity,TimeUnitName,TimeAccountTypeName", true);
     request.setRequestHeader("Authorization", "Basic " + hash);
+    console.log(request_);
     request_.send();
     request_.onreadystatechange = function () {
         if (request_.readyState == 4 && request_.readyState == 200) {
