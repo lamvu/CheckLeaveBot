@@ -46,6 +46,8 @@ dialog.matches(/^version/i, function (session) {
 });
 
 dialog.matches(/^leave/i, function (session) {
+    session.send('Hi');
+    /*
     request.onreadystatechange = function () {
         if (request.readyState == 4) {
             if (request.status == 200) {
@@ -59,28 +61,12 @@ dialog.matches(/^leave/i, function (session) {
                 var aQua = result.BalanceAvailableQuantity;
                 console.log(result);
                 console.log(aQua);
-                /*
-                parseString(res, function (err, result) {
-                    var a = result.feed.entry[0];
-                    var b = a.content[0];
-                    var c = b["m:properties"][0];
-                    var typeName = c["d:TimeAccountTypeName"][0];
-                    var unitName = c["d:TimeUnitName"][0];
-                    var uQua = c["d:BalanceUsedQuantity"][0];
-                    var pQua = c["d:BalancePlannedQuantity"][0];
-                    var aQua = c["d:BalanceAvailableQuantity"][0];
-                    console.log(typeName);
-                    console.log(unitName);
-                    console.log(uQua);
-                    console.log(pQua);
-                    console.log(aQua);
-                });*/
             } else {
                 console.log("2:"+request.statusText);
             }
         }
     }
-    request.send();
+    request.send();*/
 });
 
 dialog.onDefault(builder.DialogAction.send("I didn't understand. I can check leave for you."));
