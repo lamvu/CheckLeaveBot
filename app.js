@@ -1,6 +1,8 @@
 // Add your requirements
 var restify = require('restify'); 
 var builder = require('botbuilder');
+var xmlhttp = require("xmlhttprequest");
+var req = xmlhttp.XMLHttpRequest;
 var res = "Lam here";
 /*
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
