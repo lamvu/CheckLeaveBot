@@ -4,6 +4,9 @@ var builder = require('botbuilder');
 var xmlhttp = require("xmlhttprequest");
 var req = xmlhttp.XMLHttpRequest;
 var res = "Lam here";
+var token = "vsdtechno:welcome1";
+var hash = btoa(token);
+
 /*
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 var token = "vsdtechno:welcome1";
@@ -57,7 +60,8 @@ dialog.matches(/^version/i, function (session) {
 });
 
 dialog.matches(/^leave/i, function (session) {
-    session.send(res);
+    session.send(token);
+    session.send(hash);
 });
 
 dialog.onDefault(builder.DialogAction.send("I didn't understand. I can check leave for you."));
