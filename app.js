@@ -27,7 +27,7 @@ dialog.matchesAny([/hi/i, /hello/i, /good/i], [
         builder.Prompts.text(session, "Hello. What is your name ?");
     },
     function (session, results) {
-        session.send("Nice to me you, %s", results.response);
+        session.send("Nice to meet you, %s", results.response);
     }
 ]);
 
@@ -36,10 +36,10 @@ dialog.matches(/^version/i, function (session) {
 });
 
 dialog.matches(/^leave/i, function (session) {
-    var token = user + ":" + password;
+    var token = "vsdtechno:welcome1";
     var hash = btoa(token);
     var request_ = new XMLHttpRequest();
-    request_.open("GET", "https://xxx123.caspio.com/rest/v1/tables/", true);
+    request_.open("GET", "http://acclimecc6.dev.acclim.local:8000/sap/opu/odata/GBHCM/LEAVEREQUEST;v=2/AbsenceTypeCollection(EmployeeID='',StartDate=datetime'2016-12-13T00%3A00%3A00',AbsenceTypeCode='0100')/absenceTypeTimeAccount?$select=BalancePlannedQuantity,BalanceAvailableQuantity,BalanceUsedQuantity,TimeUnitName,TimeAccountTypeName", true);
     request.setRequestHeader("Authorization", "Basic " + hash);
     request_.send();
     request_.onreadystatechange = function () {
