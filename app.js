@@ -10,17 +10,6 @@ var hash = btoa(token);
 var request_ = new XMLHttpRequest();
 request_.open("GET", "http://acclimecc6.dev.acclim.local:8000/sap/opu/odata/GBHCM/LEAVEREQUEST;v=2/AbsenceTypeCollection(EmployeeID='',StartDate=datetime'2016-12-13T00%3A00%3A00',AbsenceTypeCode='0100')/absenceTypeTimeAccount?$select=BalancePlannedQuantity,BalanceAvailableQuantity,BalanceUsedQuantity,TimeUnitName,TimeAccountTypeName", true);
 request.setRequestHeader("Authorization", "Basic " + hash);
-console.log(request_);
-request_.send();
-request_.onreadystatechange = function () {
-    if (request_.readyState == 4 && request_.readyState == 200) {
-        res = request_.responseText;
-        console.log(response);
-        var obj = JSON.parse(response); 
-        console.log(obj);
-        session.send('Bot version 1.2');
-    }
-}
 
 // Setup Restify Server
 var server = restify.createServer();
@@ -56,8 +45,22 @@ dialog.matches(/^version/i, function (session) {
 });
 
 dialog.matches(/^leave/i, function (session) {
-    session.send(hash);
-    session.send(res);
+    request_.send();
+    request_.onreadystatechange = function (xhr) {
+        if (xhr.readyState == 4) {
+            if (xhr.status == 200) {
+                res = xhr.responseText;
+                session.send(res);
+                //var obj = JSON.parse(res); 
+                //console.log(obj);
+            } else {
+                session.send(xhr.statusText);
+            }
+        } else {
+            session.send(xhr.readyState);
+            session.send(xhr.statusText);
+        }
+    }
 });
 
 dialog.onDefault(builder.DialogAction.send("I didn't understand. I can check leave for you."));
