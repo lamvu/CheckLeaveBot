@@ -1,6 +1,7 @@
 // Add your requirements
 var restify = require('restify'); 
-var builder = require('botbuilder'); 
+var builder = require('botbuilder');
+var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 
 // Setup Restify Server
 var server = restify.createServer();
