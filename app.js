@@ -47,7 +47,6 @@ dialog.matches(/^version/i, function (session) {
 
 dialog.matches(/^leave/i, function (session) {
     session.send('Hi');
-    /*
     request.onreadystatechange = function () {
         if (request.readyState == 4) {
             if (request.status == 200) {
@@ -59,14 +58,13 @@ dialog.matches(/^leave/i, function (session) {
                 var uQua = result.BalanceUsedQuantity;
                 var pQua = result.BalancePlannedQuantity;
                 var aQua = result.BalanceAvailableQuantity;
-                console.log(result);
-                console.log(aQua);
+                session.send(aQua);
             } else {
                 console.log("2:"+request.statusText);
             }
         }
     }
-    request.send();*/
+    request.send();
 });
 
 dialog.onDefault(builder.DialogAction.send("I didn't understand. I can check leave for you."));
