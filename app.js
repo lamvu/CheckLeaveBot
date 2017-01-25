@@ -47,6 +47,7 @@ dialog.matches(/^version/i, function (session) {
 
 dialog.matches(/^leave/i, function (session) {
     session.send('Hi');
+    /*
     request.onreadystatechange = function () {
         if (request.readyState == 4) {
             if (request.status == 200) {
@@ -63,7 +64,7 @@ dialog.matches(/^leave/i, function (session) {
                 console.log("2:"+request.statusText);
             }
         }
-    }
+    }*/
     request.send();
 });
 
