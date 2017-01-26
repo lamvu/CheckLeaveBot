@@ -31,7 +31,18 @@ var model = 'https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/c413b2ef-
 var recognizer = new builder.LuisRecognizer(model);
 var dialog = new builder.IntentDialog({ recognizers: [recognizer] });
 bot.dialog('/', dialog);
-
+/*
+bot.on('error', function (err) {
+    console.log(err);
+});*/
+bot.use({
+     botbuilder: function (session, next) {
+          session.error = function (err) {
+              session.send(err);
+          };
+          next(); 
+     }
+});
 // Add intent handlers
 dialog.matchesAny([/hi/i, /hello/i, /good/i], [
     function (session) {
@@ -47,6 +58,28 @@ dialog.matches(/^version/i, function (session) {
 });
 
 dialog.matches(/^leave/i, function (session) {
+    session.sendTyping();
+    lookupItemsAsync(function (results) {
+        request.onreadystatechange = function () {
+            if (request.readyState == 4) {
+                if (request.status == 200) {
+                    var res = request.responseText;
+                    var obj = JSON.parse(res);
+                    var result = obj.d.results[0];
+                    var typeName = result.TimeAccountTypeName;
+                    var unitName = result.TimeUnitName;
+                    var uQua = result.BalanceUsedQuantity;
+                    var pQua = result.BalancePlannedQuantity;
+                    var aQua = result.BalanceAvailableQuantity;
+                    session.send(aQua);
+                } else {
+                    console.log("2:"+request.statusText);
+                }
+            }
+        }
+        request.send();
+    });
+    /*
     request.onreadystatechange = function () {
         if (request.readyState == 4) {
             if (request.status == 200) {
@@ -64,7 +97,7 @@ dialog.matches(/^leave/i, function (session) {
             }
         }
     }
-    request.send();
+    request.send();*/
 });
 
 dialog.onDefault(builder.DialogAction.send("I didn't understand. I can check leave for you."));
