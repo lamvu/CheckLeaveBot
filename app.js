@@ -47,6 +47,10 @@ dialog.matches(/^version/i, function (session) {
 
 dialog.matches(/^leave/i, function (session) {
     session.send('Hi');
+    request.onreadystatechange = function () {
+        session.send(request.readyState);
+        session.send(request.status);
+    }
     /*
     request.onreadystatechange = function () {
         if (request.readyState == 4) {
