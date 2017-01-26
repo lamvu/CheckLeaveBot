@@ -12,25 +12,6 @@ var res = "hello";
 var query = "http://10.0.0.82:8000/sap/opu/odata/GBHCM/LEAVEREQUEST;v=2/AbsenceTypeCollection(EmployeeID='',StartDate=datetime'2016-12-13T00%3A00%3A00',AbsenceTypeCode='0100')/absenceTypeTimeAccount?$select=BalancePlannedQuantity,BalanceAvailableQuantity,BalanceUsedQuantity,TimeUnitName,TimeAccountTypeName&$format=json";
 request.open("GET", query, true);
 request.setRequestHeader("Authorization", "Basic " + hash);
-request.onreadystatechange = function () {
-    if (request.readyState == 4) {
-        if (request.status == 200) {
-            res = request.responseText;
-            var obj = JSON.parse(res);
-            var result = obj.d.results[0];
-            var typeName = result.TimeAccountTypeName;
-            var unitName = result.TimeUnitName;
-            var uQua = result.BalanceUsedQuantity;
-            var pQua = result.BalancePlannedQuantity;
-            var aQua = result.BalanceAvailableQuantity;
-            res = aQua;
-            //session.send(aQua);
-        } else {
-            console.log("2:"+request.statusText);
-        }
-    }
-}
-request.send();
 
 // Setup Restify Server
 var server = restify.createServer();
@@ -66,14 +47,6 @@ dialog.matches(/^version/i, function (session) {
 });
 
 dialog.matches(/^leave/i, function (session) {
-    session.send('Hi');
-    session.send(res);
-    /*
-    request.onreadystatechange = function () {
-        session.send(request.readyState);
-        session.send(request.status);
-    }
-    /*
     request.onreadystatechange = function () {
         if (request.readyState == 4) {
             if (request.status == 200) {
@@ -91,7 +64,7 @@ dialog.matches(/^leave/i, function (session) {
             }
         }
     }
-    request.send();*/
+    request.send();
 });
 
 dialog.onDefault(builder.DialogAction.send("I didn't understand. I can check leave for you."));
