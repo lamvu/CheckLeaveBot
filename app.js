@@ -13,6 +13,13 @@ var query = "http://10.0.0.82:8000/sap/opu/odata/GBHCM/LEAVEREQUEST;v=2/AbsenceT
 request.open("GET", query, true);
 request.setRequestHeader("Authorization", "Basic " + hash);
 
+var searchHotels = function (destination) {
+    return new Promise(function (resolve) {
+        var hotels = 4;
+        setTimeout(() => resolve(hotels), 1000);
+    });
+}
+
 // Setup Restify Server
 var server = restify.createServer();
 server.listen(process.env.PORT || 3000, function() 
@@ -58,6 +65,12 @@ dialog.matches(/^version/i, function (session) {
 });
 
 dialog.matches(/^leave/i, function (session) {
+    var destination = "1";
+    searchHotels(destination).then((hotels) => {
+        session.send('I found %d hotels:', hotels.length);
+        session.endDialog();
+    });
+    /*
     session.sendTyping();
     lookupItemsAsync(function (results) {
         request.onreadystatechange = function () {
