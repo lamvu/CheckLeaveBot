@@ -15,7 +15,7 @@ request.setRequestHeader("Authorization", "Basic " + hash);
 
 var searchHotels = function (destination) {
     return new Promise(function (resolve) {
-        var hotels = 4;
+        var hotels = [1, 4];
         setTimeout(() => resolve(hotels), 1000);
     });
 }
