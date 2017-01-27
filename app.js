@@ -35,7 +35,7 @@ var searchHotels = function (destination) {
                     var aQua = result.BalanceAvailableQuantity;
                     resolve(aQua);
                 } else {
-                    console.log("2:"+request.statusText);
+                    resolve(request.statusText);
                 }
             }
         }
@@ -90,7 +90,8 @@ dialog.matches(/^version/i, function (session) {
 dialog.matches(/^leave/i, function (session) {
     var destination = "1";
     searchHotels(destination).then((hotels) => {
-        session.send('I found %d leaves.', hotels);
+        session.send("HI");
+        session.send(hotels);
         session.endDialog();
     });
     /*
