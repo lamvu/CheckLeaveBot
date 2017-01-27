@@ -20,6 +20,29 @@ var searchHotels = function (destination) {
     });
 }
 
+var searchHotels = function (destination) {
+    return new Promise(function (resolve) {
+        request.onreadystatechange = function () {
+            if (request.readyState == 4) {
+                if (request.status == 200) {
+                    var res = request.responseText;
+                    var obj = JSON.parse(res);
+                    var result = obj.d.results[0];
+                    var typeName = result.TimeAccountTypeName;
+                    var unitName = result.TimeUnitName;
+                    var uQua = result.BalanceUsedQuantity;
+                    var pQua = result.BalancePlannedQuantity;
+                    var aQua = result.BalanceAvailableQuantity;
+                    resolve(aQua);
+                } else {
+                    console.log("2:"+request.statusText);
+                }
+            }
+        }
+        request.send();
+    });
+}
+
 // Setup Restify Server
 var server = restify.createServer();
 server.listen(process.env.PORT || 3000, function() 
@@ -67,7 +90,7 @@ dialog.matches(/^version/i, function (session) {
 dialog.matches(/^leave/i, function (session) {
     var destination = "1";
     searchHotels(destination).then((hotels) => {
-        session.send('I found %d hotels:', hotels.length);
+        session.send('I found %d leaves.', hotels);
         session.endDialog();
     });
     /*
