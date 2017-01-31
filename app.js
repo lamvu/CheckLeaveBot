@@ -16,13 +16,6 @@ request.setRequestHeader("Authorization", "Basic " + hash);
 
 var searchHotels = function (destination) {
     return new Promise(function (resolve) {
-        var hotels = [1, 4];
-        setTimeout(() => resolve(hotels), 1000);
-    });
-}
-
-var searchHotels = function (destination) {
-    return new Promise(function (resolve) {
         request.onreadystatechange = function () {
             if (request.readyState == 4) {
                 if (request.status == 200) {
@@ -36,7 +29,7 @@ var searchHotels = function (destination) {
                     var aQua = result.BalanceAvailableQuantity;
                     resolve(result);
                 } else {
-                    resolve(request.statusText);
+                    resolve(request);
                 }
             }
         }
@@ -91,7 +84,7 @@ dialog.matches(/^version/i, function (session) {
 dialog.matches(/^leave/i, function (session) {
     var destination = "1";
     searchHotels(destination).then((result) => {
-        session.send("HI");
+        if(result.status) session.send(result.status);
         var typeName = result.TimeAccountTypeName;
         var unitName = result.TimeUnitName;
         var uQua = result.BalanceUsedQuantity;
