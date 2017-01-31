@@ -27,8 +27,14 @@
 			            console.log(res);
 			            alert(res);
 			        } else {
+			        		for(var i in request) {
+			        			var m;
+			        			var r = request[i];
+			        			m += (i + ":" + r + "\n");
+			        		}
 			            console.log("2:"+request.statusText);
-			            alert("2:"+request.statusText);
+			            //alert("2:"+request.statusText);
+			            alert(m);
 			        }
 			    }
 			}
