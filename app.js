@@ -130,7 +130,7 @@ dialog.matches(/^leave/i, function (session) {
                 var str = "You have used " + uQua + " days, planned " + pQua + " days, had " + aQua + " days leave".
                 session.send(str);
             } else {
-                session.send("2:"+request.status);
+                session.send("CROS problem with status "+request.status);
             }
         }
     }

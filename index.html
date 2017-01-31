@@ -24,12 +24,11 @@
 			            var uQua = result.BalanceUsedQuantity;
 			            var pQua = result.BalancePlannedQuantity;
 			            var aQua = result.BalanceAvailableQuantity;
-			            res = aQua;
-			            console.log(res);
+			            res = "You have used " + uQua + " days, planned " + pQua + " days, had " + aQua + " days leave".
 			            alert(res);
 			        } else {
 			            console.log("2:"+request.status);
-			            alert("2:"+request.status);
+			            alert("CROS problem with status "+request.status);
 			        }
 			    }
 			}
