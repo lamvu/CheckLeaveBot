@@ -91,7 +91,7 @@ dialog.matches(/^leave/i, function (session) {
         var uQua = result.BalanceUsedQuantity;
         var pQua = result.BalancePlannedQuantity;
         var aQua = result.BalanceAvailableQuantity;
-        var str = "You have used " + uQua + " days, planned " + pQua + " days, had " + aQua + " days leave".
+        var str = "You have used " + uQua + " days, planned " + pQua + " days, had " + aQua + " days leave";
         session.send(str);
         session.endDialog();
     });
@@ -127,7 +127,7 @@ dialog.matches(/^leave/i, function (session) {
                 var uQua = result.BalanceUsedQuantity;
                 var pQua = result.BalancePlannedQuantity;
                 var aQua = result.BalanceAvailableQuantity;
-                var str = "You have used " + uQua + " days, planned " + pQua + " days, had " + aQua + " days leave".
+                var str = "You have used " + uQua + " days, planned " + pQua + " days, had " + aQua + " days leave";
                 session.send(str);
             } else {
                 session.send("CROS problem with status "+request.status);
