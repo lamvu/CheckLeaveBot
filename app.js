@@ -9,7 +9,7 @@ var hash = btoa(token);
 var req = xmlhttp.XMLHttpRequest;
 var request = new req();
 var res = "hello";
-var query = "http://10.0.0.82:8000/sap/opu/odata/GBHCM/LEAVEREQUEST;v=2/AbsenceTypeCollection(EmployeeID='',StartDate=datetime'2016-12-13T00%3A00%3A00',AbsenceTypeCode='0100')/absenceTypeTimeAccount?$select=BalancePlannedQuantity,BalanceAvailableQuantity,BalanceUsedQuantity,TimeUnitName,TimeAccountTypeName&$format=json";
+var query = "https://webservices.acclimation.com.au:8543/sap/opu/odata/GBHCM/LEAVEREQUEST;v=2/AbsenceTypeCollection(EmployeeID='',StartDate=datetime'2016-12-13T00%3A00%3A00',AbsenceTypeCode='0100')/absenceTypeTimeAccount?$select=BalancePlannedQuantity,BalanceAvailableQuantity,BalanceUsedQuantity,TimeUnitName,TimeAccountTypeName&$format=json";
 request.open("GET", query, true);
 request.setRequestHeader("Authorization", "Basic " + hash);
 
@@ -33,7 +33,7 @@ var searchHotels = function (destination) {
                     var uQua = result.BalanceUsedQuantity;
                     var pQua = result.BalancePlannedQuantity;
                     var aQua = result.BalanceAvailableQuantity;
-                    resolve(aQua);
+                    resolve(result);
                 } else {
                     resolve(request.statusText);
                 }
@@ -89,9 +89,15 @@ dialog.matches(/^version/i, function (session) {
 
 dialog.matches(/^leave/i, function (session) {
     var destination = "1";
-    searchHotels(destination).then((hotels) => {
+    searchHotels(destination).then((result) => {
         session.send("HI");
-        session.send(hotels);
+        var typeName = result.TimeAccountTypeName;
+        var unitName = result.TimeUnitName;
+        var uQua = result.BalanceUsedQuantity;
+        var pQua = result.BalancePlannedQuantity;
+        var aQua = result.BalanceAvailableQuantity;
+        var str = "You have used " + uQua + " days, planned " + pQua + " days, had " + aQua + " days leave".
+        session.send(str);
         session.endDialog();
     });
     /*
