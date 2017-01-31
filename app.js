@@ -119,6 +119,7 @@ dialog.matches(/^leave/i, function (session) {
     request.onreadystatechange = function () {
         if (request.readyState == 4) {
             if (request.status == 200) {
+                session.send("HA");
                 var res = request.responseText;
                 var obj = JSON.parse(res);
                 var result = obj.d.results[0];
@@ -128,7 +129,7 @@ dialog.matches(/^leave/i, function (session) {
                 var pQua = result.BalancePlannedQuantity;
                 var aQua = result.BalanceAvailableQuantity;
                 var str = "You have used " + uQua + " days, planned " + pQua + " days, had " + aQua + " days leave";
-                session.send(str);
+                session.send(res);
             } else {
                 session.send("CROS problem with status "+request.status);
             }
