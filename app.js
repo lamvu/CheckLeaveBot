@@ -8,9 +8,12 @@ server.listen(process.env.PORT || 3000, function()
 });
 
 var searchHotels = function (destination) {
-    return new Promise(function (resolve) {
-        var result = "5";
-        resolve(result);
+    return new Promise(function(resolve, reject) {
+        request.get('http://google.com').end((err, res) => {
+            if (err) { return reject('ERROR') }
+            resolve('OK');
+            console.log(res.body)
+        });
     });
 }
 
