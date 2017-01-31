@@ -82,6 +82,7 @@ dialog.matches(/^version/i, function (session) {
 });
 
 dialog.matches(/^leave/i, function (session) {
+    /*
     var destination = "1";
     searchHotels(destination).then((result) => {
         if(result.status) session.send(result.status);
@@ -94,7 +95,6 @@ dialog.matches(/^leave/i, function (session) {
         session.send(str);
         session.endDialog();
     });
-    /*
     session.sendTyping();
     lookupItemsAsync(function (results) {
         request.onreadystatechange = function () {
@@ -115,8 +115,7 @@ dialog.matches(/^leave/i, function (session) {
             }
         }
         request.send();
-    });
-    /*
+    });*/
     request.onreadystatechange = function () {
         if (request.readyState == 4) {
             if (request.status == 200) {
@@ -128,13 +127,14 @@ dialog.matches(/^leave/i, function (session) {
                 var uQua = result.BalanceUsedQuantity;
                 var pQua = result.BalancePlannedQuantity;
                 var aQua = result.BalanceAvailableQuantity;
-                session.send(aQua);
+                var str = "You have used " + uQua + " days, planned " + pQua + " days, had " + aQua + " days leave".
+                session.send(str);
             } else {
-                console.log("2:"+request.statusText);
+                session.send("2:"+request.status);
             }
         }
     }
-    request.send();*/
+    request.send();
 });
 
 dialog.onDefault(builder.DialogAction.send("I didn't understand. I can check leave for you."));
