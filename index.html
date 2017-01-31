@@ -2,38 +2,37 @@
 <html>
    <head>
       <title>Check Leave Bot</title>
+			<script>
+			var token = "vsdtechno:welcome1";
+			var hash = btoa(token);
+			var request = new XMLHttpRequest();
+			var res = "hello";
+			//var query = "https://10.0.0.82:8000/sap/opu/odata/GBHCM/LEAVEREQUEST;v=2/AbsenceTypeCollection(EmployeeID='',StartDate=datetime'2016-12-13T00%3A00%3A00',AbsenceTypeCode='0100')/absenceTypeTimeAccount?$select=BalancePlannedQuantity,BalanceAvailableQuantity,BalanceUsedQuantity,TimeUnitName,TimeAccountTypeName&$format=json";
+			var query = "https://webservices.acclimation.com.au:8543/sap/opu/odata/GBHCM/LEAVEREQUEST;v=2/AbsenceTypeCollection(EmployeeID='',StartDate=datetime'2016-12-13T00%3A00%3A00',AbsenceTypeCode='0100')/absenceTypeTimeAccount?$select=BalancePlannedQuantity,BalanceAvailableQuantity,BalanceUsedQuantity,TimeUnitName,TimeAccountTypeName&$format=json";
+			request.open("GET", query, true);
+			request.setRequestHeader("Authorization", "Basic " + hash);
+			request.onreadystatechange = function () {
+			    if (request.readyState == 4) {
+			        if (request.status == 200) {
+			            res = request.responseText;
+			            var obj = JSON.parse(res);
+			            var result = obj.d.results[0];
+			            var typeName = result.TimeAccountTypeName;
+			            var unitName = result.TimeUnitName;
+			            var uQua = result.BalanceUsedQuantity;
+			            var pQua = result.BalancePlannedQuantity;
+			            var aQua = result.BalanceAvailableQuantity;
+			            res = aQua;
+			            console.log(res);
+			        } else {
+			            console.log("2:"+request.statusText);
+			        }
+			    }
+			}
+			request.send();
+			</script>
    </head>
    <body>
-      <iframe src="https://webchat.botframework.com/embed/CheckLeaveBot?s=b579OGDFL30.cwA.4V0.DvDtqGO9pdaxefWiSWS4ser9B9OenT1OhKLRDX5-5Fk" style="height: 502px; max-height: 502px;"></iframe>
+      <!--<iframe src="https://webchat.botframework.com/embed/CheckLeaveBot?s=b579OGDFL30.cwA.4V0.DvDtqGO9pdaxefWiSWS4ser9B9OenT1OhKLRDX5-5Fk" style="height: 502px; max-height: 502px;"></iframe>-->
    </body>
-</html>-->
-<!--
-<script>
-var token = "vsdtechno:welcome1";
-var hash = btoa(token);
-var request = new XMLHttpRequest();
-var res = "hello";
-//var query = "https://10.0.0.82:8000/sap/opu/odata/GBHCM/LEAVEREQUEST;v=2/AbsenceTypeCollection(EmployeeID='',StartDate=datetime'2016-12-13T00%3A00%3A00',AbsenceTypeCode='0100')/absenceTypeTimeAccount?$select=BalancePlannedQuantity,BalanceAvailableQuantity,BalanceUsedQuantity,TimeUnitName,TimeAccountTypeName&$format=json";
-var query = "https://webservices.acclimation.com.au:8543/sap/opu/odata/GBHCM/LEAVEREQUEST;v=2/AbsenceTypeCollection(EmployeeID='',StartDate=datetime'2016-12-13T00%3A00%3A00',AbsenceTypeCode='0100')/absenceTypeTimeAccount?$select=BalancePlannedQuantity,BalanceAvailableQuantity,BalanceUsedQuantity,TimeUnitName,TimeAccountTypeName&$format=json";
-request.open("GET", query, true);
-request.setRequestHeader("Authorization", "Basic " + hash);
-request.onreadystatechange = function () {
-    if (request.readyState == 4) {
-        if (request.status == 200) {
-            res = request.responseText;
-            var obj = JSON.parse(res);
-            var result = obj.d.results[0];
-            var typeName = result.TimeAccountTypeName;
-            var unitName = result.TimeUnitName;
-            var uQua = result.BalanceUsedQuantity;
-            var pQua = result.BalancePlannedQuantity;
-            var aQua = result.BalanceAvailableQuantity;
-            res = aQua;
-            console.log(res);
-        } else {
-            console.log("2:"+request.statusText);
-        }
-    }
-}
-request.send();
-</script>-->
+</html>
