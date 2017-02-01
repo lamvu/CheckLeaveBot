@@ -1,6 +1,50 @@
 // Add your requirements
 var restify = require('restify'); 
 var builder = require('botbuilder');
+var request = require('superagent');
+var query = "https://10.0.0.82:8543/sap/opu/odata/GBHCM/LEAVEREQUEST;v=2/AbsenceTypeCollection(EmployeeID='',StartDate=datetime'2016-12-13T00%3A00%3A00',AbsenceTypeCode='0100')/absenceTypeTimeAccount?$select=BalancePlannedQuantity,BalanceAvailableQuantity,BalanceUsedQuantity,TimeUnitName,TimeAccountTypeName&$format=json";
+request.auth('vsdtechno', 'welcome1', {type:'auto'})
+request.get(query).end((err, res) => {
+    if (err) { return reject('ERROR') }
+    resolve('OK');
+    console.log(res.body)
+});
+
+/*
+var req = xmlhttp.XMLHttpRequest;
+var request = new req();
+var res = "hello";
+var query = "http://10.0.0.82:8000/sap/opu/odata/GBHCM/LEAVEREQUEST;v=2/AbsenceTypeCollection(EmployeeID='',StartDate=datetime'2016-12-13T00%3A00%3A00',AbsenceTypeCode='0100')/absenceTypeTimeAccount?$select=BalancePlannedQuantity,BalanceAvailableQuantity,BalanceUsedQuantity,TimeUnitName,TimeAccountTypeName&$format=json";
+request.open("GET", query, true);
+request.setRequestHeader("Authorization", "Basic " + hash);
+request.onreadystatechange = function () {
+    if (request.readyState == 4) {
+        if (request.status == 200) {
+            res = request.responseText;
+            var obj = JSON.parse(res);
+            var result = obj.d.results[0];
+            var typeName = result.TimeAccountTypeName;
+            var unitName = result.TimeUnitName;
+            var uQua = result.BalanceUsedQuantity;
+            var pQua = result.BalancePlannedQuantity;
+            var aQua = result.BalanceAvailableQuantity;
+            res = aQua;
+            console.log(res);
+        } else {
+            console.log("2:"+request.statusText);
+        }
+    }
+}
+request.send();*/
+
+
+
+
+
+/*
+// Add your requirements
+var restify = require('restify'); 
+var builder = require('botbuilder');
 var server = restify.createServer();
 server.listen(process.env.PORT || 3000, function() 
 {
@@ -14,6 +58,24 @@ var searchHotels = function (destination) {
             resolve('OK');
             console.log(res.body)
         });
+    });
+}
+
+var searchHotels = function (destination) {
+    return new Promise(function (resolve) {
+        request.onreadystatechange = function () {
+            if (request.readyState == 4) {
+                if (request.status == 200) {
+                    var res = request.responseText;
+                    var obj = JSON.parse(res);
+                    var result = obj.d.results[0];
+                    resolve(result);
+                } else {
+                    resolve(request);
+                }
+            }
+        }
+        request.send();
     });
 }
 
@@ -65,4 +127,4 @@ dialog.onDefault(builder.DialogAction.send("I didn't understand. I can check lea
 server.get('/', restify.serveStatic({
  directory: __dirname,
  default: '/index.html'
-}));
+}));*/
