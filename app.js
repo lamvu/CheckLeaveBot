@@ -14,9 +14,9 @@ server.listen(process.env.PORT || 3000, function()
    console.log('%s listening to %s', server.name, server.url); 
 });
 
-var searchHotels = function (destination) {
+var searchHotels = function (uname, pword) {
     return new Promise(function(resolve, reject) {
-        request.get(query).auth('vsdtechno', 'welcome1').end(function(err, res){
+        request.get(query).auth(uname, pword).end(function(err, res){
             if (err || !res.ok) {
                 return reject('ERROR')
             } else {
@@ -31,6 +31,14 @@ var searchHotels = function (destination) {
 var connector = new builder.ChatConnector
 ({ appId: '4287d7b4-aa06-4800-97a6-d842ef67733d', appPassword: 'yS8VVU9MD42EqwbR0LdCv9j' }); 
 var bot = new builder.UniversalBot(connector);
+var bot = new builder.UniversalBot(connector, function (session) {
+    var address = session.message.address;
+    userStore.push(address);
+
+    // end current dialog
+    session.endDialog('I can answer your leave queries ! It will start in a few seconds...');
+});
+
 server.post('/api/messages', connector.listen());
 
 // Create LUIS recognizer that points at our model and add it as the root '/' dialog for our Cortana Bot.
@@ -49,37 +57,67 @@ bot.use({
           next(); 
      }
 });
-// Add intent handlers
-dialog.matchesAny([/hi/i, /hello/i, /good/i], [
+
+setInterval(function () {
+    var newAddresses = userStore.splice(0);
+    newAddresses.forEach(function (address) {
+
+        console.log('Starting session for user:', address);
+
+        // new conversation address, copy without conversationId
+        var newConversationAddress = Object.assign({}, address);
+        delete newConversationAddress.conversation;
+
+        // start survey dialog
+        bot.beginDialog(newConversationAddress, 'survey', null, (err) => {
+            if (err) {
+                // error ocurred while starting new conversation. Channel not supported?
+                bot.send(new builder.Message()
+                    .text('This channel does not support this operation: ' + err.message)
+                    .address(address));
+            }
+        });
+
+    });
+}, 5000);
+
+bot.dialog('survey', [
     function (session) {
-        builder.Prompts.text(session, "Hello. What is your name ?");
+        builder.Prompts.text(session, 'Hello... What\'s your name?');
     },
     function (session, results) {
-        session.send("Nice to meet you, %s", results.response);
+        session.userData.name = results.response;
+        builder.Prompts.text(session, 'Hi ' + results.response + ', What is username to connect to database ?');
+    },
+    function (session, results) {
+        session.userData.uname = results.response;
+        builder.Prompts.text(session, 'Hi ' + results.response + ', What is password to connect to database ?');
+        //builder.Prompts.choice(session, 'What language do you code Node using? ', ['JavaScript', 'CoffeeScript', 'TypeScript']);
+    },
+    function (session, results) {
+        session.userData.pword = results.response.entity;
+        searchHotels(session.userData.uname, session.userData.pword).then((result) => {
+            var res = result.d.results[0];
+            var typeName = res.TimeAccountTypeName;
+            var unitName = res.TimeUnitName;
+            var uQua = res.BalanceUsedQuantity;
+            var pQua = res.BalancePlannedQuantity;
+            var aQua = res.BalanceAvailableQuantity;
+            var str = session.userData.name + ", you have used " + uQua + " days, planned " + pQua + " days, had " + aQua + " days leave";
+            session.send(str);
+            session.endDialog();
+        }).catch((err) => {
+            session.send("error: " + err);
+            session.endDialog();
+        });
+        /*
+        session.endDialog('Got it... ' + session.userData.name +
+            ' you\'ve been programming for ' + session.userData.coding +
+            ' years and use ' + session.userData.language + '.');*/
     }
 ]);
 
-dialog.matches(/^version/i, function (session) {
-    session.send('Bot version 1.2');
-});
 
-dialog.matches(/leave/i, function (session) {
-    var destination = "1";
-    searchHotels(destination).then((result) => {
-        var res = result.d.results[0];
-        var typeName = res.TimeAccountTypeName;
-        var unitName = res.TimeUnitName;
-        var uQua = res.BalanceUsedQuantity;
-        var pQua = res.BalancePlannedQuantity;
-        var aQua = res.BalanceAvailableQuantity;
-        var str = "You have used " + uQua + " days, planned " + pQua + " days, had " + aQua + " days leave";
-        session.send(str);
-        session.endDialog();
-    }).catch((err) => {
-        session.send("error: " + err);
-        session.endDialog();
-    });
-});
 
 dialog.onDefault(builder.DialogAction.send("I didn't understand. I can check leave for you."));
 server.get('/', restify.serveStatic({
