@@ -59,9 +59,6 @@ bot.use({
           next(); 
      }
 });
-
-var uname = 'vsdtechno';
-var pword = 'welcome1';
 dialog.matchesAny([/hi/i, /hello/i, /good/i], [
     function (session) {
         builder.Prompts.text(session, "Hello. What is your name ?");
