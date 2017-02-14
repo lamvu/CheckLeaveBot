@@ -100,35 +100,45 @@ dialog.matchesAny([/hi/i, /hello/i, /good/i], [
     },
     function (session, results) {
         session.userData.pword = results.response;
-        leaveApplicationProcess(session);
+        if(session.userData.choice == '1' || session.userData.choice.indexOf('leave') != -1) {
+            leaveApplication(session.userData.uname, session.userData.pword).then((result) => {
+                session.userData.leaves = result.d.results;
+                session.userData.idx = 0;
+                session.send("There are %d application needed to approve or reject.", result.d.results.length);
+                approveOrReject(session);
+            }).catch((err) => {
+                if(err == 401) session.send("Unauthorized. Your username and password may be incorrect.");
+                else session.send("Status is " + err + ". Unknown error. Server may have problem.");
+                session.endDialog();
+            });
+
+        } else if(session.userData.choice == '2' || session.userData.choice.indexOf('sale') != -1) {
+            session.send("This function is not implemented yet");
+            session.endDialog();
+
+        } else if(session.userData.choice == '3' || session.userData.choice.indexOf('purchase') != -1) {
+            session.send("This function is not implemented yet");
+            session.endDialog();
+        }
     },
-]);
-var leaveApplicationProcess = function (session) {
-    if(session.userData.choice == '1' || session.userData.choice.indexOf('leave') != -1) {
-
-        leaveApplication(session.userData.uname, session.userData.pword).then((result) => {
-            console.log(result);
-            var leaves = result.d.results;
-            var i = 0;
-            approveOrReject(leaves, i, session);
-            session.send("HI");
+    function (session, results) {
+        var i = parseInt(session.userData.idx);
+        var leaves = session.userData.leaves;
+        console.log(results.repsonse);
+        session.send("Application %s with id %s processed", session.userData.idx, results.repsonse);
+        if(i < leaves.length - 1) {
+            session.userData.idx = i + 1;
+            approveOrReject(session);
+        } else {
+            session.send("That is all. Thank you.");
             session.endDialog();
-        }).catch((err) => {
-            if(err == 401) session.send("Unauthorized. Your username and password may be incorrect.");
-            else session.send("Status is " + err + ". Unknown error. Server may have problem.");
-            session.endDialog();
-        });
-
-    } else if(session.userData.choice == '2' || session.userData.choice.indexOf('sale') != -1) {
-        session.send("This function is not implemented yet");
-        session.endDialog();
-
-    } else if(session.userData.choice == '3' || session.userData.choice.indexOf('purchase') != -1) {
-        session.send("This function is not implemented yet");
-        session.endDialog();
+        }
     }
-}
-var approveOrReject = function(leaves, i, session) {
+]);
+var approveOrReject = function(session) {
+    session.send("begin");
+    var i = session.userData.idx;
+    var leaves = session.userData.leaves;
     var leave = leaves[i];
     var RequestId = leave.RequestId;
     var RequesterName = leave.RequesterName;
@@ -146,32 +156,24 @@ var approveOrReject = function(leaves, i, session) {
     EndDate = EndDate.toLocaleDateString();
     var str = util.format("Leave request %d:\n\nRequester: %s\n\nLeave type: %s\n\nFrom: %s\n\nTo: %s\n\nTotal time: %s hours\n\n", i + 1, RequesterName, LeaveTypeDesc, StartDate, EndDate, AbsenceHours);
     session.send(str);
-    //check
-    if(i < leaves.length - 1) {
-        approveOrReject(leaves, i + 1, session);
-    } else {
-        session.send("That is all. Thank you.");
-        session.endDialog();
-    }
-    /*
-    builder.Prompts.choice(session, "Do you want to approve or reject this leave application ?", ['approve', 'reject'], {retryPrompt:'Sorry I dont understand. Please answer approve or reject'});
-    var subFunc = function (session, results) {
-        if(results.response == '1' || results.response == 'approve') {
-            //approve
-            session.send("approve");
-        } else {
-            //reject
-            session.send("reject");
-        }
-        //check
-        if(i < leaves.length - 1) {
-            approveOrReject(leaves, i + 1, session);
-        } else {
-            session.send("That is all. Thank you.");
-            session.endDialog();
-        }
-    },*/
+    session.beginDialog('/approveOrReject', leave);
 }
+bot.dialog('/approveOrReject', [
+    function (session2, args, next) {
+        session2.dialogData.requestId = args.RequestId;
+        builder.Prompts.choice(session2, "Do you want to approve or reject this leave application ?", ['approve', 'reject'], {retryPrompt:'Sorry I dont understand. Please answer approve or reject'});
+    },
+    function (session2, results) {
+        session2.dialogData.choice = results.response.entity.toLowerCase() || results.response.entity;
+        if(session2.dialogData.choice == "1" || session2.dialogData.choice.indexOf("approve") != -1) {
+            session2.send("Application id %s approved", session2.dialogData.requestId);
+        } else {
+            session2.send("Application id %s rejected", session2.dialogData.requestId);
+        }
+        session2.endDialogWithResult({ repsonse: session2.dialogData.requestId })
+    },
+]);
+
 dialog.matches(/leave/i, [
     function (session) {
         builder.Prompts.text(session, 'What is username to connect to database ?');
@@ -183,8 +185,6 @@ dialog.matches(/leave/i, [
     },
     function (session, results) {
         session.userData.pword = results.response;
-        console.log(session.userData.uname);
-        console.log(session.userData.pword);
         checkLeave(session.userData.uname, session.userData.pword).then((result) => {
             var res = result.d.results[0];
             var typeName = res.TimeAccountTypeName;
@@ -202,7 +202,7 @@ dialog.matches(/leave/i, [
         });
     }
 ]);
-dialog.onDefault(builder.DialogAction.send("I didn't understand. I can check leave for you."));
+dialog.onDefault(builder.DialogAction.send("I didn't understand. You can say hi hello or ask to check leave."));
 server.get('/', restify.serveStatic({
  directory: __dirname,
  default: '/index.html'

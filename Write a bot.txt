@@ -1,0 +1,121 @@
+https://www.luis.ai/Help
+
+01 - END DIALOG WITH RETURN (the most important)
+bot.dialog('/', [
+    function (session) {
+        session.beginDialog('/askName');
+    },
+    function (session, results) {
+        session.send('Hello %s!', results.response);
+    }
+]);
+bot.dialog('/askName', [
+    function (session) {
+        builder.Prompts.text(session, 'Hi! What is your name?');
+    },
+    function (session, results) {
+        session.endDialogWithResult(results);
+    }
+]);
+
+02 - START DIALOG WITH ARGUMENT AND RECEIVE RESULTS WHEN DIALOG END
+bot.dialog('/', [
+    function (session) {
+        session.beginDialog('/ensureProfile', session.userData.profile);
+    },
+    function (session, results) {
+        session.userData.profile = results.response;
+        session.send('Hello %s with email %s!', session.userData.profile.name, session.userData.profile.email);
+    }
+]);
+bot.dialog('/ensureProfile', [
+    function (session, args, next) {
+        session.dialogData.profile = args || {};
+        if(args == undefined) {
+            builder.Prompts.text(session, "Hi! What is your name?");
+        } else {
+            if (!session.dialogData.profile.name) {
+                builder.Prompts.text(session, "Hi! What is your name?");
+            } else {
+                next();
+            }
+        }
+    },
+    function (session, results, next) {
+        if (results.response) {
+            session.dialogData.profile.name = results.response;
+        }
+        if (!session.dialogData.profile.email) {
+            builder.Prompts.text(session, "What's your email address?");
+        } else {
+            next();
+        }
+    },
+    function (session, results) {
+        if (results.response) {
+            session.dialogData.profile.email = results.response;
+        }
+        session.endDialogWithResult({ response: session.dialogData.profile })
+    }
+]);
+
+
+01 - BOT WITH MANY DIALOG FOR WATERFALL
+bot.dialog('/',
+    function (session) {
+        session.send("Hello! Welcome to the Acclim Bot. Would you like to ask today?")
+        session.beginDialog('/user');
+    }
+);
+bot.dialog('/user', new builder.IntentDialog()
+    .matches(/^yes/i, [
+        function (session) {
+            if (session.userData.uname) session.beginDialog('/subject');
+            else builder.Prompts.text(session, "What is your username?")
+        },
+        function (session, results) {
+            session.userData.uname = results.response;
+            session.send("Your username is %s", results.response);
+            session.beginDialog('/subject');
+        }
+    ])
+    .matches(/^no/i, 
+        function(session){
+            session.send("Ok see ya later!")
+            session.endConversation;
+        })
+);
+bot.dialog('/subject', [
+    function (session) {
+        builder.Prompts.text(session, "What study set would you like today?");
+    },
+    function (session, results) {
+        session.send("Your term is %s", results.response);
+        session.send("Ok! I got your flashcards! Send 'ready' to begin. Send 'flip' for definition. Send 'next' for the next card. Send 'exit' when you are done");
+        session.beginDialog('/study')
+    }]
+);
+var index = 0;
+bot.dialog('/study', new builder.IntentDialog()
+    .matches(/^ready/i, [
+        function (session) {
+            session.send("Your ready index is %s", index);
+        }])
+    .matches(/^flip/i, [
+        function (session) {
+            session.send("Your flip index is %s", index);
+        }])
+    .matches(/^next/i, [
+        function (session) {
+            session.send("Your click next with index is %s", index);
+            index += 1;
+        }])
+    .matches(/^exit/i, [
+        function (session) {
+            session.send("Hope you had fun studying. See ya later :)")
+            session.endDialog();
+        }])
+);
+
+02. 
+bot.dialog ( '/', function (session) {session.send ( 'Hello World'); } );
