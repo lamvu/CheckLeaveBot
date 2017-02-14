@@ -1,12 +1,26 @@
+var util = require('util');
 var restify = require('restify'); 
 var builder = require('botbuilder');
 var request = require('superagent');
 var ip = "https://webservices.acclimation.com.au:8543";//ECONREFUSED
 var leaveQuery = ip + "/sap/opu/odata/GBHCM/LEAVEREQUEST;v=2/AbsenceTypeCollection(EmployeeID='',StartDate=datetime'2016-12-13T00%3A00%3A00',AbsenceTypeCode='0100')/absenceTypeTimeAccount?$select=BalancePlannedQuantity,BalanceAvailableQuantity,BalanceUsedQuantity,TimeUnitName,TimeAccountTypeName&$format=json";
+var leaveApplicationQuery = ip + "/sap/opu/odata/GBHCM/LEAVEAPPROVAL;mo/LeaveRequestCollection?$skip=0&$top=100&$orderby=ChangeDate desc&$filter=FilterGetAllRequests eq 1 and TaskDefinitionID eq ''&$inlinecount=allpages&$format=json";
+
 var server = restify.createServer();
 server.listen(process.env.PORT || 3000, function() {
    console.log('%s listening to %s', server.name, server.url); 
 });
+var leaveApplication = function (uname, pword) {
+    return new Promise(function(resolve, reject) {
+        request.get(leaveApplicationQuery).auth(uname, pword).end(function(err, res){
+            if (err || !res.ok) {
+                return reject(err.status)
+            } else {
+                resolve(res.body);
+            }
+        });
+    });
+}
 var checkLeave = function (uname, pword) {
     return new Promise(function(resolve, reject) {
         request.get(leaveQuery).auth(uname, pword).end(function(err, res){
@@ -86,21 +100,18 @@ dialog.matchesAny([/hi/i, /hello/i, /good/i], [
     },
     function (session, results) {
         session.userData.pword = results.response;
-        interact(session);
-    }
+        leaveApplicationProcess(session);
+    },
 ]);
-var interact = function (session) {
+var leaveApplicationProcess = function (session) {
     if(session.userData.choice == '1' || session.userData.choice.indexOf('leave') != -1) {
 
-        checkLeave(session.userData.uname, session.userData.pword).then((result) => {
-            var res = result.d.results[0];
-            var typeName = res.TimeAccountTypeName;
-            var unitName = res.TimeUnitName;
-            var uQua = res.BalanceUsedQuantity;
-            var pQua = res.BalancePlannedQuantity;
-            var aQua = res.BalanceAvailableQuantity;
-            var str = "You have used " + uQua + " days, planned " + pQua + " days, had " + aQua + " days leave";
-            session.send(str);
+        leaveApplication(session.userData.uname, session.userData.pword).then((result) => {
+            console.log(result);
+            var leaves = result.d.results;
+            var i = 0;
+            approveOrReject(leaves, i, session);
+            session.send("HI");
             session.endDialog();
         }).catch((err) => {
             if(err == 401) session.send("Unauthorized. Your username and password may be incorrect.");
@@ -116,6 +127,50 @@ var interact = function (session) {
         session.send("This function is not implemented yet");
         session.endDialog();
     }
+}
+var approveOrReject = function(leaves, i, session) {
+    var leave = leaves[i];
+    var RequestId = leave.RequestId;
+    var RequesterName = leave.RequesterName;
+    var LeaveTypeDesc = leave.LeaveTypeDesc;
+    var AbsenceHours = leave.AbsenceHours;
+    var StartDate = leave.StartDate;
+    var EndDate = leave.EndDate;
+    StartDate = StartDate.replace("/Date(", "");
+    StartDate = StartDate.replace(")/", "");
+    EndDate = EndDate.replace("/Date(", "");
+    EndDate = EndDate.replace(")/", "");
+    StartDate = new Date(parseInt(StartDate));
+    EndDate = new Date(parseInt(EndDate));
+    StartDate = StartDate.toLocaleDateString();
+    EndDate = EndDate.toLocaleDateString();
+    var str = util.format("Leave request %d:\n\nRequester: %s\n\nLeave type: %s\n\nFrom: %s\n\nTo: %s\n\nTotal time: %s hours\n\n", i + 1, RequesterName, LeaveTypeDesc, StartDate, EndDate, AbsenceHours);
+    session.send(str);
+    //check
+    if(i < leaves.length - 1) {
+        approveOrReject(leaves, i + 1, session);
+    } else {
+        session.send("That is all. Thank you.");
+        session.endDialog();
+    }
+    /*
+    builder.Prompts.choice(session, "Do you want to approve or reject this leave application ?", ['approve', 'reject'], {retryPrompt:'Sorry I dont understand. Please answer approve or reject'});
+    var subFunc = function (session, results) {
+        if(results.response == '1' || results.response == 'approve') {
+            //approve
+            session.send("approve");
+        } else {
+            //reject
+            session.send("reject");
+        }
+        //check
+        if(i < leaves.length - 1) {
+            approveOrReject(leaves, i + 1, session);
+        } else {
+            session.send("That is all. Thank you.");
+            session.endDialog();
+        }
+    },*/
 }
 dialog.matches(/leave/i, [
     function (session) {
