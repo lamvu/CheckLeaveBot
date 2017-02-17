@@ -43,6 +43,14 @@ Thats fine Sony. The Lambots sound fun!!
 What is outstanding here at Supreme? 
 
 We do need to discuss and plan Data Migration - which I'll find more information about next week when I am at CourtView.
+====
+acclim_app
+Acclim@7
+
+http://acclimecc6.dev.acclim.local:8000/sap/opu/odata/sap/ZPO_RELEASE_SRV/PurchaseOrders?$skip=0&$top=20&$orderby=PurchaseOrderNumber asc&$inlinecount=allpages (nodata)
+http://acclimecc6.dev.acclim.local:8000/sap/opu/odata/sap/ZPO_RELEASE_SRV/PurchaseOrders?$filter=ReleaseCode eq '01'
+http://acclimecc6.dev.acclim.local:8000/sap/opu/odata/sap/ZPO_RELEASE_SRV/PurchaseOrders?$filter=ReleaseCode eq '02'
+
 
 
 
