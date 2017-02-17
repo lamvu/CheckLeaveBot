@@ -1,4 +1,18 @@
+Just use NPM package cross-env (cross patform environemnt variable)
+then set in package.json
+{
+  "scripts": {
+    "build": "cross-env NODE_ENV=production webpack --config build/webpack.config.js"
+  }
+}
+
+
+
+
+
+
 https://www.luis.ai/Help
+
 
 01 - END DIALOG WITH RETURN (the most important)
 bot.dialog('/', [

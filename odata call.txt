@@ -1,0 +1,68 @@
+Vacation Leave
+http://acclimecc6.dev.acclim.local:8000/sap/opu/odata/GBHCM/LEAVEREQUEST;v=2/AbsenceTypeCollection(EmployeeID='',StartDate=datetime'2016-12-13T00%3A00%3A00',AbsenceTypeCode='0101')/absenceTypeTimeAccount?$select=BalancePlannedQuantity,BalanceAvailableQuantity,BalanceUsedQuantity,TimeUnitName,TimeAccountTypeName
+
+Sick Leave
+http://acclimecc6.dev.acclim.local:8000/sap/opu/odata/GBHCM/LEAVEREQUEST;v=2/AbsenceTypeCollection(EmployeeID='',StartDate=datetime'2016-12-13T00%3A00%3A00',AbsenceTypeCode='0200')/absenceTypeTimeAccount?$select=BalancePlannedQuantity,BalanceAvailableQuantity,BalanceUsedQuantity,TimeUnitName,TimeAccountTypeName
+
+Paid Leave:
+http://acclimecc6.dev.acclim.local:8000/sap/opu/odata/GBHCM/LEAVEREQUEST;v=2/AbsenceTypeCollection(EmployeeID='',StartDate=datetime'2016-12-13T00%3A00%3A00',AbsenceTypeCode='0100')/absenceTypeTimeAccount?$select=BalancePlannedQuantity,BalanceAvailableQuantity,BalanceUsedQuantity,TimeUnitName,TimeAccountTypeName
+
+Credential:
+User:- vsdtechno
+Password:- welcome1
+===
+Getting list of leave applications:
+https://webservices.acclimation.com.au:8543/sap/opu/odata/GBHCM/LEAVEAPPROVAL;mo/LeaveRequestCollection?$skip=0&$top=100&$orderby=ChangeDate desc&$filter=FilterGetAllRequests eq 1 and TaskDefinitionID eq ''&$inlinecount=allpages
+
+
+Approve URL (POST) - Approve:
+https://webservices.acclimation.com.au:8543/sap/opu/odata/GBHCM/LEAVEAPPROVAL;mo/ApplyLeaveRequestDecision?SAP__Origin='IDE_800'&RequestId='005056B971CA1ED6BBB2EB456DF395BF'&Version=1&Comment='Yes Holiday.'&Decision='PREPARE_APPROVE'
+
+Approve URL (POST) - Reject:
+https://webservices.acclimation.com.au:8543/sap/opu/odata/GBHCM/LEAVEAPPROVAL;mo/ApplyLeaveRequestDecision?SAP__Origin='IDE_800'&RequestId='005056B971CA1ED6BBB2EB456DF395BF'&Version=1&Comment='Yes Holiday.'&Decision='PREPARE_REJECT'
+
+
+Get request id from list application oData and pass it to approve URL to approve/reject the request.
+
+
+User credential - this is shared user. do not change the password and use the leave quota wisely. Thanks.
+
+user name: vsdtechno2
+password: external2
+===
+External:  https://webservices.acclimation.com.au:8543/fiori
+Internal:   http://acclimecc6.dev.acclim.local:8000/fiori/shells/abap/Fiorilaunchpad.html
+
+Look for Purchase order (I'm sure we have this) and sales order (this one I am not sure) but you can focus on PO and leave app first.
+===
+User: acclimdemo
+Password: Welcome1
+===
+Thats fine Sony. The Lambots sound fun!!
+
+What is outstanding here at Supreme? 
+
+We do need to discuss and plan Data Migration - which I'll find more information about next week when I am at CourtView.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
